@@ -5,6 +5,7 @@ This file tracks planned features and priorities for Phase 2 and beyond.
 ## Short-term (Phase 2 priorities)
 
 - [x] Sessions: group messages into daily session files (one `.md` per day`).
+	- [x] Per-entry timestamps in daily files
 - [x] Frontend modularization: split `client/app.js` into `api.js`, `chat.js`, `archive.js`, `ui.js` (initial split done).
 - [ ] UX polish: loading states, scroll anchoring, keyboard shortcuts, error banner.
 - [ ] Auto-tagging: LLM-based preflight to populate `tags` in frontmatter.
