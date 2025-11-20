@@ -10,6 +10,11 @@ This file tracks planned features and priorities for Phase 2 and beyond.
 - [ ] Auto-tagging: LLM-based preflight to populate `tags` in frontmatter.
 - [x] Metadata index: create `journal/index.json` for fast sidebar rendering and search (planned; index file not yet implemented)
 
+## Workflow / tooling
+
+- [x] Commit policy: create conventional commit after prompt-driven changes and provide helper script (`scripts/commit_prompt.mjs`).
+- [x] Tests: basic Node tests added for `fileHelpers` and `journalStore` (see `test/`).
+
 ## Mid-term
 
 - LLM configuration UI: model selection, system prompts, memory window.

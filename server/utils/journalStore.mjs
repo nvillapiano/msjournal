@@ -104,7 +104,12 @@ export async function appendExchange(userMessage) {
   }
 
   // Append the new exchange to the day's content. Use a visible separator for clarity.
-  const newExchange = `\n\n---\n\n**You:** ${userMessage}\n\n**Agent:** ${agentReply}\n`;
+  function timeNow() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  const ts = timeNow();
+  const newExchange = `\n\n---\n\n### ${ts}\n\n**You:** ${userMessage}\n\n**Agent:** ${agentReply}\n`;
 
   // Update summary with latest agent reply
   frontmatter.summary = agentReply.slice(0, 140);
