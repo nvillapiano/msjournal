@@ -12,6 +12,16 @@ function dateKeyFor(entry) {
   return m ? m[0] : 'unknown';
 }
 
+function formatLabel(e) {
+  // Prefer explicit title, otherwise format filename/id
+  const raw = e.title && String(e.title).trim() ? e.title : (e.file || e.id || '');
+  // remove extension
+  const noext = String(raw).replace(/\.md$/i, '');
+  // replace underscores and dashes with spaces
+  const spaced = noext.replace(/[_-]+/g, ' ');
+  return String(spaced).trim();
+}
+
 export async function loadJournalList() {
   try {
     const entries = await fetchJournalList();
@@ -40,10 +50,14 @@ export async function loadJournalList() {
       const dayEl = document.createElement('div');
       dayEl.className = 'msj-day';
 
-  const btn = document.createElement('button');
-  btn.className = 'msj-entry msj-day__btn';
-  btn.innerHTML = `<div class="msj-entry__title">${escapeHtml(key)}</div><div class="msj-entry__meta">${group.length} message${group.length>1? 's':''}</div>`;
+      // Header area: day button + chevron to toggle preview
+      const header = document.createElement('div');
+      header.className = 'msj-day__header';
 
+      const btn = document.createElement('button');
+      btn.className = 'msj-entry msj-day__btn';
+      const titleText = key === 'unknown' ? 'Unknown date' : key;
+      btn.innerHTML = `<div class="msj-entry__title">${escapeHtml(titleText)}</div><div class="msj-entry__meta">${group.length} message${group.length>1? 's':''}</div>`;
       btn.addEventListener('click', () => {
         const prev = journalList.querySelector('.msj-entry--active');
         if (prev) prev.classList.remove('msj-entry--active');
@@ -51,20 +65,40 @@ export async function loadJournalList() {
         loadDay(key);
       });
 
-      dayEl.appendChild(btn);
+      const toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'msj-day__toggle';
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.innerHTML = '<span class="msj-day__chev">▸</span>';
 
-      // optionally show a small preview list under the day (collapsed)
+      header.appendChild(btn);
+      header.appendChild(toggle);
+      dayEl.appendChild(header);
+
+      // preview list under the day (collapsed by default)
       const preview = document.createElement('div');
       preview.className = 'msj-day__preview';
       for (const e of group.slice(0,3)) {
         const p = document.createElement('div');
         p.className = 'msj-day__preview-item';
-        const raw = e.summary || e.title || e.id || '';
-        const max = 120;
-        p.textContent = raw.length > max ? raw.slice(0, max).trim() + '…' : raw;
+        if (key === 'unknown') {
+          // show formatted filename/title for unknowns
+          p.textContent = formatLabel(e) + (e.date ? '' : ' (no date)');
+        } else {
+          const raw = e.summary || e.title || e.id || '';
+          const max = 120;
+          p.textContent = raw.length > max ? raw.slice(0, max).trim() + '…' : raw;
+        }
         preview.appendChild(p);
       }
       dayEl.appendChild(preview);
+
+      toggle.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        const expanded = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!expanded));
+        preview.classList.toggle('msj-day__preview--expanded', !expanded);
+      });
 
       journalList.appendChild(dayEl);
     }

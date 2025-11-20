@@ -69,6 +69,35 @@ body {
   gap: 10px;
 }
 
+.msj-day {
+  display: block;
+}
+
+.msj-day__header {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.msj-day__toggle {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.msj-day__chev {
+  display: inline-block;
+  transform: rotate(0deg);
+  transition: transform var(--transition-fast);
+}
+
+.msj-day__toggle[aria-expanded="true"] .msj-day__chev {
+  transform: rotate(90deg);
+}
+
 .msj-entry {
   padding: 10px 12px;
   border-radius: var(--radius-md);
@@ -117,13 +146,16 @@ body {
   margin-top: 6px;
   max-height: 4.4em; /* approx 3 lines */
   overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+.msj-day__preview--expanded {
+  max-height: none;
 }
 
 .msj-day__preview-item {
-  padding: 2px 0;
-  line-height: 1.2;
-  font-size: 12px;
+  padding: 6px 8px;
+  line-height: 1.25;
+  font-size: 13px;
   color: var(--text-muted);
 }
 
