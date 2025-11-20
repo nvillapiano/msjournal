@@ -27,10 +27,15 @@ body {
   font-family: var(--font);
 }
 
+html, body {
+  height: 100%;
+}
+
 .msj-app {
   display: grid;
   grid-template-columns: 320px minmax(0, 1fr);
   height: 100vh;
+  overflow: hidden;
 }
 
 /* Sidebar */
@@ -168,6 +173,11 @@ body {
   gap: 10px;
 }
 
+/* Allow flex children to scroll correctly inside constrained container */
+.msj-main {
+  min-height: 0;
+}
+
 .msj-chat {
   flex: 1;
   overflow-y: auto;
@@ -178,6 +188,10 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.msj-chat {
+  min-height: 0;
 }
 
 /* Messages */
