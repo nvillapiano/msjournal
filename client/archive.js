@@ -15,7 +15,7 @@ function dateKeyFor(entry) {
 export async function loadJournalList() {
   try {
     const entries = await fetchJournalList();
-
+    entriesCache = entries;
     journalList.innerHTML = '';
 
     if (!entries.length) {
