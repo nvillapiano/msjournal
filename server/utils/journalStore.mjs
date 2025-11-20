@@ -6,7 +6,8 @@ import { v4 as uuidv4 } from "uuid";
 import {
   ensureJournalDir,
   getJournalDir,
-  writeFileSafe
+  writeFileSafe,
+  readFileSafe
 } from "./fileHelpers.mjs";
 import { queryLLM } from "./llmHandler.mjs";
 import { safeGitCommit } from "./gitCommit.mjs";
@@ -24,8 +25,20 @@ export async function listEntries() {
   for (const file of files) {
     if (!file.endsWith(".md")) continue;
     const fullPath = path.join(dir, file);
-    const raw = await fs.readFile(fullPath, "utf8");
-    const parsed = matter(raw);
+    // Use safe reader to avoid throwing on a single bad file
+    const raw = await readFileSafe(fullPath);
+    if (!raw) {
+      console.warn('Skipping unreadable journal file:', fullPath);
+      continue;
+    }
+
+    let parsed;
+    try {
+      parsed = matter(raw);
+    } catch (e) {
+      console.warn('Failed to parse frontmatter for', fullPath, e.message);
+      continue;
+    }
 
     entries.push({
       id: file.replace(".md", ""),
@@ -47,15 +60,17 @@ export async function getEntryById(id) {
   const file = `${id}.md`;
   const fullPath = path.join(dir, file);
 
+  const raw = await readFileSafe(fullPath);
+  if (!raw) return null;
   try {
-    const raw = await fs.readFile(fullPath, "utf8");
     const parsed = matter(raw);
     return {
       id,
       ...parsed.data,
       body: parsed.content
     };
-  } catch {
+  } catch (e) {
+    console.warn('Failed to parse entry', fullPath, e.message);
     return null;
   }
 }
