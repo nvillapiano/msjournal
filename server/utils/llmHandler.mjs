@@ -5,62 +5,66 @@ const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "llama3";
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 
 export async function queryLLM(prompt) {
-  // 1. Try Ollama first (local, no external dependency)
+  //
+  // 1. Try Ollama (non-streaming)
+  //
   try {
     const response = await fetch(`${OLLAMA_URL}/api/generate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: OLLAMA_MODEL,
-        prompt,
-        stream: false
+        prompt: prompt,
+        stream: false   // MUST be boolean, not string
       })
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      if (data.response) return data.response.trim();
+    if (!response.ok) {
+      console.warn("Ollama responded with non-OK status:", response.status);
+      console.warn(await response.text());
+      throw new Error("Ollama returned an error");
+    }
+
+    const data = await response.json();
+
+    if (data && data.response) {
+      return data.response.trim();
     } else {
-      console.warn("Ollama response not ok:", await response.text());
+      console.warn("Ollama returned no 'response' field:", data);
     }
   } catch (err) {
-    console.warn("Ollama not available:", err.message);
+    console.warn("⚠️ Ollama request failed:", err.message);
   }
 
+  //
   // 2. OpenAI fallback
+  //
   if (OPENAI_API_KEY) {
     try {
-      const response = await fetch(
-        "https://api.openai.com/v1/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${OPENAI_API_KEY}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            model: "gpt-4.1-mini",
-            messages: [
-              {
-                role: "system",
-                content:
-                  "You are a calm, practical journaling companion helping a person track MS-related symptoms, routines, and emotions. Be concise and grounded."
-              },
-              { role: "user", content: prompt }
-            ]
-          })
-        }
-      );
-
-      const data = await response.json();
-      const content =
-        data.choices?.[0]?.message?.content || "No response from OpenAI.";
-      return content.trim();
+      const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${OPENAI_API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "gpt-4.1-mini",
+          messages: [
+            { role: "system", content: "You are a calm MS journaling companion." },
+            { role: "user", content: prompt }
+          ]
+        })
+      });
+      const data = await resp.json();
+      return data.choices?.[0]?.message?.content?.trim() ??
+        "No response from OpenAI.";
     } catch (err) {
       console.warn("OpenAI fallback failed:", err.message);
     }
   }
 
-  // 3. Last resort
+  //
+  // 3. No LLM available
+  //
   return "⚠️ No LLM backend available. You can still journal manually; entries will be saved.";
 }
