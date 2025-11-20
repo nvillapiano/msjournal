@@ -110,6 +110,23 @@ body {
   display: block;
 }
 
+.msj-day__preview {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 6px;
+  max-height: 4.4em; /* approx 3 lines */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.msj-day__preview-item {
+  padding: 2px 0;
+  line-height: 1.2;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
 /* Main */
 
 .msj-main {

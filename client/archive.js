@@ -59,7 +59,9 @@ export async function loadJournalList() {
       for (const e of group.slice(0,3)) {
         const p = document.createElement('div');
         p.className = 'msj-day__preview-item';
-        p.textContent = e.summary || e.title || e.id;
+        const raw = e.summary || e.title || e.id || '';
+        const max = 120;
+        p.textContent = raw.length > max ? raw.slice(0, max).trim() + '…' : raw;
         preview.appendChild(p);
       }
       dayEl.appendChild(preview);
