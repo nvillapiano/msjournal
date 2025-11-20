@@ -1,4 +1,4 @@
-import { loadJournalList, loadEntry } from './archive.js';
+import { loadJournalList } from './archive.js';
 import { appendMessage, showTypingIndicator } from './chat.js';
 import { postChat } from './api.js';
 
