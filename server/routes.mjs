@@ -10,6 +10,7 @@ const router = express.Router();
 router.get("/journal", async (req, res) => {
   try {
     const entries = await listEntries();
+    console.info(`/api/journal -> returning ${entries.length} entries`);
     res.json(entries);
   } catch (err) {
     console.error("Error listing entries:", err);

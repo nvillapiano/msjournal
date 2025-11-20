@@ -29,7 +29,7 @@ body {
 
 .msj-app {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
+  grid-template-columns: 320px minmax(0, 1fr);
   height: 100vh;
 }
 
@@ -66,17 +66,20 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
 }
 
 .msj-entry {
-  padding: 8px 9px;
+  padding: 10px 12px;
   border-radius: var(--radius-md);
   border: 1px solid transparent;
   background: transparent;
+  color: var(--text-main);
+  text-align: left;
   cursor: pointer;
   transition: background-color var(--transition-fast),
     border-color var(--transition-fast), transform var(--transition-fast);
+  display: block;
 }
 
 .msj-entry:hover {
@@ -86,13 +89,18 @@ body {
 }
 
 .msj-entry__title {
-  font-size: 12px;
-  margin: 0 0 2px;
+  font-size: 14px;
+  margin: 0 0 4px;
+  font-weight: 600;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .msj-entry__meta {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--text-muted);
+  display: block;
 }
 
 /* Main */
