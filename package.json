@@ -6,7 +6,8 @@
   "main": "server/server.mjs",
   "scripts": {
     "start": "node server/server.mjs",
-    "dev": "NODE_ENV=development node server/server.mjs"
+    "dev": "NODE_ENV=development node server/server.mjs",
+    "test": "node --test"
   },
   "dependencies": {
     "body-parser": "^1.20.2",

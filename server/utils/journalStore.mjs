@@ -64,9 +64,13 @@ export async function appendExchange(userMessage) {
   await ensureJournalDir();
   const dir = getJournalDir();
 
-  const id = `${isoDate()}_${uuidv4().slice(0, 8)}`;
-  const filePath = path.join(dir, `${id}.md`);
+  // Use one markdown file per day (session) instead of one file per message.
+  const today = isoDate();
+  const sessionId = today; // e.g., '2025-11-19'
+  const fileName = `${sessionId}.md`;
+  const filePath = path.join(dir, fileName);
 
+  // Build the LLM prompt
   const prompt = [
     "User MS journal entry:",
     userMessage,
@@ -76,23 +80,42 @@ export async function appendExchange(userMessage) {
 
   const agentReply = await queryLLM(prompt);
 
-  const frontmatter = {
-    id,
+  // Read existing session file if present
+  let existingRaw = await readFileSafe(filePath);
+  let frontmatter = {
+    id: sessionId,
     date: isoDate(),
     tags: [],
     summary: agentReply.slice(0, 140)
   };
 
-  const content = matter.stringify(
-    `# Entry\n\n**You:** ${userMessage}\n\n**Agent:** ${agentReply}\n`,
-    frontmatter
-  );
+  let existingContent = "# Entry\n\n";
+  if (existingRaw) {
+    try {
+      const parsed = matter(existingRaw);
+      frontmatter = Object.assign({}, frontmatter, parsed.data || {});
+      // keep existing tags if any
+      frontmatter.tags = parsed.data?.tags || frontmatter.tags;
+      existingContent = parsed.content || existingContent;
+    } catch (e) {
+      // If parsing fails, we'll overwrite using a clean template
+      existingContent = "# Entry\n\n";
+    }
+  }
 
-  await writeFileSafe(filePath, content);
-  await safeGitCommit(`journal: add entry ${id}`);
+  // Append the new exchange to the day's content. Use a visible separator for clarity.
+  const newExchange = `\n\n---\n\n**You:** ${userMessage}\n\n**Agent:** ${agentReply}\n`;
+
+  // Update summary with latest agent reply
+  frontmatter.summary = agentReply.slice(0, 140);
+
+  const finalContent = matter.stringify(existingContent + newExchange, frontmatter);
+
+  await writeFileSafe(filePath, finalContent);
+  await safeGitCommit(`journal: add/append entry ${frontmatter.id}`);
 
   return {
-    id,
+    id: frontmatter.id,
     user: userMessage,
     agent: agentReply
   };
