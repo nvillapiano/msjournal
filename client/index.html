@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MS Journal Agent</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="msj-app">
+    <aside class="msj-sidebar">
+      <header class="msj-sidebar__header">
+        <h1 class="msj-logo">MS Journal</h1>
+        <p class="msj-sidebar__hint">Local, private, Git-backed.</p>
+      </header>
+      <section class="msj-sidebar__list" id="journal-list">
+        <!-- filled by app.js -->
+      </section>
+    </aside>
+
+    <main class="msj-main">
+      <section class="msj-chat" id="chat-window">
+        <!-- messages injected here -->
+      </section>
+
+      <form class="msj-input" id="chat-form">
+        <textarea
+          id="chat-input"
+          class="msj-input__field"
+          placeholder="How are you feeling? Any MS symptoms, wins, or questions?"
+          rows="2"
+        ></textarea>
+        <div class="msj-input__actions">
+          <span class="msj-input__hint">Enter = send • Shift+Enter = newline</span>
+          <button type="submit" class="msj-input__button">Send</button>
+        </div>
+      </form>
+    </main>
+  </div>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
