@@ -1,0 +1,10 @@
+/* Input area and actions */
+.msj-input { display: flex; flex-direction: column; gap: 6px; }
+.msj-input__field {
+  width: 100%; padding: 8px 9px; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); background-color: #050608; color: var(--text-main); font-size: 13px; resize: none; outline: none; transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+}
+.msj-input__field:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-soft); background-color: #080a10; }
+.msj-input__actions { display: flex; align-items: center; justify-content: space-between; }
+.msj-input__hint { font-size: 10px; color: var(--text-muted); }
+.msj-input__button { padding: 6px 14px; font-size: 12px; border-radius: 999px; border: none; background-color: var(--accent); color: #120905; cursor: pointer; transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast); }
+.msj-input__button:hover { background-color: #ff944f; transform: translateY(-1px); box-shadow: 0 5px 14px rgba(0, 0, 0, 0.55); }

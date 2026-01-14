@@ -1,0 +1,51 @@
+/* Sidebar and archive styles */
+.msj-sidebar {
+  background-color: var(--bg-soft);
+  border-right: 1px solid var(--border-subtle);
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.msj-sidebar__header { padding: 6px 8px 10px; }
+
+.msj-logo { margin: 0; font-size: 18px; letter-spacing: 0.04em; }
+.msj-sidebar__hint { margin: 4px 0 0; font-size: 11px; color: var(--text-muted); }
+
+.msj-sidebar__list {
+  margin-top: 6px;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.msj-entry {
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-main);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+  display: block;
+}
+
+.msj-entry:hover { background-color: #151822; border-color: var(--border-subtle); transform: translateY(-1px); }
+.msj-entry--active { background-color: #0e1620; border-color: rgba(255,123,44,0.12); box-shadow: 0 6px 14px rgba(0,0,0,0.5); transform: none; }
+
+.msj-entry__title { font-size: 14px; margin: 0 0 4px; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.msj-entry__meta { font-size: 12px; color: var(--text-muted); display: block; }
+
+.msj-day { display: block; }
+.msj-day__header { display: flex; gap: 8px; align-items: center; }
+.msj-day__toggle { background: transparent; border: none; color: var(--text-muted); padding: 6px 8px; border-radius: 8px; cursor: pointer; }
+.msj-day__chev { display: inline-block; transform: rotate(0deg); transition: transform var(--transition-fast); }
+.msj-day__toggle[aria-expanded="true"] .msj-day__chev { transform: rotate(90deg); }
+
+.msj-day__preview { font-size: 12px; color: var(--text-muted); display: block; margin-top: 6px; max-height: 4.4em; overflow: hidden; }
+.msj-day__preview--expanded { max-height: none; }
+.msj-day__preview-item { padding: 6px 8px; line-height: 1.25; font-size: 13px; color: var(--text-muted); }

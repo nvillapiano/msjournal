@@ -1,0 +1,28 @@
+/* Layout and container rules */
+.msj-app {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.msj-main {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 16px 12px;
+  gap: 10px;
+  min-height: 0;
+}
+
+.msj-chat {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 10px;
+  border-radius: var(--radius-xl);
+  background: radial-gradient(circle at top left, #171a23, #050608);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
