@@ -128,6 +128,20 @@ export async function appendExchange(userMessage) {
     console.warn('Tagging LLM call failed:', e.message);
   }
 
+  // LLM-only weather inference: ask the LLM to infer a one-line weather summary
+  // from the user's message. Avoid external APIs per user preference.
+  let weatherSummary = '';
+  try {
+    const weatherPrompt = `Provide a one-line weather summary inferred from this journal entry. If the entry does not mention weather or there's insufficient information, reply with the single word "Unknown". Return only the one-line summary.\n\nEntry:\n${userMessage}`;
+    const weatherResp = await queryLLM(weatherPrompt);
+    if (weatherResp && !weatherResp.startsWith('⚠️')) {
+      weatherSummary = String(weatherResp).split(/\r?\n/)[0].trim();
+      if (/^unknown$/i.test(weatherSummary)) weatherSummary = '';
+    }
+  } catch (e) {
+    console.warn('Weather LLM call failed:', e.message);
+  }
+
   // Read existing session file if present
   let existingRaw = await readFileSafe(filePath);
   let frontmatter = {
@@ -149,6 +163,10 @@ export async function appendExchange(userMessage) {
         const merged = Array.from(new Set([...(frontmatter.tags || []), ...llmTags]));
         frontmatter.tags = merged.slice(0, 12);
       }
+      // preserve existing weather if present
+      if (parsed.data?.weather) {
+        frontmatter.weather = parsed.data.weather;
+      }
       existingContent = parsed.content || existingContent;
     } catch (e) {
       // If parsing fails, we'll overwrite using a clean template
@@ -169,6 +187,10 @@ export async function appendExchange(userMessage) {
   // If there were LLM tags generated and no existing tags were present, apply them
   if ((!frontmatter.tags || !frontmatter.tags.length) && llmTags && llmTags.length) {
     frontmatter.tags = llmTags.slice(0, 12);
+  }
+  // If there is no existing weather in frontmatter, use the LLM-inferred summary
+  if ((!frontmatter.weather || !String(frontmatter.weather).trim()) && weatherSummary) {
+    frontmatter.weather = weatherSummary;
   }
 
   const finalContent = matter.stringify(existingContent + newExchange, frontmatter);
