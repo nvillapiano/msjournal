@@ -197,11 +197,11 @@ html, body {
 /* Messages */
 
 .msj-message {
-  max-width: 78%;
-  padding: 8px 9px;
+  max-width: 72%;
+  padding: 8px 10px;
   border-radius: 12px;
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 1.4;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.55);
 }
 

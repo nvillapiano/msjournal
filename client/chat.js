@@ -5,7 +5,8 @@ export function appendMessage(text, role) {
   el.className = 'msj-message ' + (role === 'user' ? 'msj-message--user' : 'msj-message--agent');
   el.innerHTML = escapeHtml(text).replace(/\n/g, '<br>');
   chatWindow.appendChild(el);
-  scrollChatToBottom();
+  // ensure newly appended message is visible
+  requestAnimationFrame(() => scrollChatToBottom());
 }
 
 export function showTypingIndicator() {
@@ -24,7 +25,13 @@ export function showTypingIndicator() {
 }
 
 export function scrollChatToBottom() {
-  chatWindow.scrollTop = chatWindow.scrollHeight;
+  const last = chatWindow.lastElementChild;
+  if (last) {
+    // prefer bringing last message into view without affecting layout
+    last.scrollIntoView({ block: 'end', behavior: 'auto' });
+  } else {
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  }
 }
 
 export function escapeHtml(str) {

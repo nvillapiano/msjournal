@@ -102,6 +102,15 @@ export async function loadJournalList() {
 
       journalList.appendChild(dayEl);
     }
+
+    // Auto-select the newest day (first key) so the chat shows content on load
+    if (keys.length) {
+      const firstDayBtn = journalList.querySelector('.msj-day .msj-day__btn');
+      if (firstDayBtn) {
+        firstDayBtn.classList.add('msj-entry--active');
+        loadDay(keys[0]);
+      }
+    }
   } catch (err) {
     console.error('Failed to load journal:', err);
     journalList.innerHTML = '<div class="msj-entry__meta">Error loading archive.</div>';
