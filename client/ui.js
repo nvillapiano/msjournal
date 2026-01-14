@@ -8,6 +8,20 @@ const input = document.getElementById('chat-input');
 export async function init() {
   await loadJournalList();
   attachFormBehavior();
+  attachNewEntryBehavior();
+}
+
+function attachNewEntryBehavior() {
+  const btn = document.getElementById('new-entry-btn');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const chatWindow = document.getElementById('chat-window');
+    if (chatWindow) chatWindow.innerHTML = '';
+    const prev = document.querySelector('.msj-entry--active');
+    if (prev) prev.classList.remove('msj-entry--active');
+    input.value = '';
+    input.focus();
+  });
 }
 
 function attachFormBehavior() {

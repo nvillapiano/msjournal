@@ -10,8 +10,13 @@
   <div class="msj-app">
     <aside class="msj-sidebar">
       <header class="msj-sidebar__header">
-        <h1 class="msj-logo">MS Journal</h1>
-        <p class="msj-sidebar__hint">Local, private, Git-backed.</p>
+        <div class="msj-sidebar__header-left">
+          <h1 class="msj-logo">MS Journal</h1>
+          <p class="msj-sidebar__hint">Local, private, Git-backed.</p>
+        </div>
+        <div class="msj-sidebar__header-right">
+          <button id="new-entry-btn" class="msj-new-entry">New entry</button>
+        </div>
       </header>
       <section class="msj-sidebar__list" id="journal-list">
         <!-- filled by app.js -->
