@@ -1,68 +1,7 @@
-:root {
-  --bg: #050608;
-  --bg-soft: #111319;
-  --border-subtle: #262938;
-  --accent: #ff7b2c;
-  --accent-soft: rgba(255, 123, 44, 0.14);
-  --text-main: #f5f5f7;
-  --text-muted: #9ca0b0;
-  --radius-xl: 18px;
-  --radius-lg: 14px;
-  --radius-md: 10px;
-  --transition-fast: 0.18s ease-out;
-  --font: system-ui, -apple-system, BlinkMacSystemFont, -sans-serif;
-}
+/* Aggregator: component stylesheets — imports must be at the top */
+@import url('/client/styles/base.css');
+@import url('/client/styles/layout.css');
+@import url('/client/styles/sidebar.css');
+@import url('/client/styles/chat.css');
+@import url('/client/styles/input.css');
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  background-color: var(--bg);
-  color: var(--text-main);
-  font-family: var(--font);
-}
-
-html, body {
-  /* Aggregator: import component stylesheets */
-  @import url('/client/styles/base.css');
-  @import url('/client/styles/layout.css');
-  @import url('/client/styles/sidebar.css');
-  @import url('/client/styles/chat.css');
-  @import url('/client/styles/input.css');
-  box-shadow: 0 0 0 1px var(--accent-soft);
-  background-color: #080a10;
-}
-
-.msj-input__actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.msj-input__hint {
-  font-size: 10px;
-  color: var(--text-muted);
-}
-
-.msj-input__button {
-  padding: 6px 14px;
-  font-size: 12px;
-  border-radius: 999px;
-  border: none;
-  background-color: var(--accent);
-  color: #120905;
-  cursor: pointer;
-  transition: background-color var(--transition-fast),
-    transform var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-.msj-input__button:hover {
-  background-color: #ff944f;
-  transform: translateY(-1px);
-  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.55);
-}
