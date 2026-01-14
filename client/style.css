@@ -1,7 +1,7 @@
 /* Aggregator: component stylesheets — imports must be at the top */
-@import url('/client/styles/base.css');
-@import url('/client/styles/layout.css');
-@import url('/client/styles/sidebar.css');
-@import url('/client/styles/chat.css');
-@import url('/client/styles/input.css');
+@import url('/styles/base.css');
+@import url('/styles/layout.css');
+@import url('/styles/sidebar.css');
+@import url('/styles/chat.css');
+@import url('/styles/input.css');
 
