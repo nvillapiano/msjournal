@@ -20,6 +20,11 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  /* Match chat window styling so the list appears as a distinct panel */
+  padding: 10px;
+  border-radius: var(--radius-xl);
+  background: radial-gradient(circle at top left, #171a23, #050608);
+  border: 1px solid var(--border-subtle);
 }
 
 .msj-entry {
