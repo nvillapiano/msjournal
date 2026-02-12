@@ -1,8 +1,8 @@
 import fetch from "node-fetch";
 
-const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434";
+export const OLLAMA_URL = process.env.OLLAMA_URL || "http://localhost:11434";
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || "llama3";
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
+export const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 
 export async function queryLLM(prompt) {
   //

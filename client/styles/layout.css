@@ -13,11 +13,13 @@
   gap: 10px;
   min-height: 0;
   max-height: 100vh;
+  position: relative;
 }
 
 .msj-chat {
   flex: 1;
   overflow-y: auto;
+  margin: 40px 0 0;
   padding: 10px 10px;
   border-radius: var(--radius-xl);
   background: radial-gradient(circle at top left, #171a23, #050608);

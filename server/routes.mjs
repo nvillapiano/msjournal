@@ -5,6 +5,8 @@ import {
   appendExchange,
   searchEntries
 } from "./utils/journalStore.mjs";
+import fetch from 'node-fetch';
+import { OLLAMA_URL, OPENAI_API_KEY } from './utils/llmHandler.mjs';
 
 const router = express.Router();
 
@@ -61,6 +63,24 @@ router.post("/chat", async (req, res) => {
     console.error("Error in /chat:", err);
     res.status(500).json({ error: "Failed to process message" });
   }
+});
+
+// LLM/backend status endpoint
+router.get('/status', async (req, res) => {
+  try {
+    // Quick Ollama health check via a lightweight endpoint
+    const url = `${OLLAMA_URL}/api/tags`;
+    const r = await fetch(url, { method: 'GET' });
+    if (r.ok) return res.json({ status: 'online', backend: 'ollama' });
+  } catch (err) {
+    // ignore and fall through to OpenAI check
+  }
+
+  if (OPENAI_API_KEY) {
+    return res.json({ status: 'online', backend: 'gpt' });
+  }
+
+  return res.json({ status: 'offline' });
 });
 
 export { router };

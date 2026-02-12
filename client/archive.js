@@ -130,7 +130,9 @@ async function loadDay(dayKey) {
       // fetch each entry fully
       try {
         const full = await fetchEntry(e.id);
-        const body = full.body || '';
+        let body = full.body || '';
+        // strip a leading '# Entry' markdown header that was used as a template title
+        body = body.replace(/^\s*#\s*Entry\s*\r?\n+/i, '');
         const segments = body.split(/\n-{3,}\n/).map(s => s.trim()).filter(Boolean);
 
         for (const seg of segments) {

@@ -2,6 +2,7 @@ import { loadJournalList } from './archive.js';
 import { appendMessage, showTypingIndicator } from './chat.js';
 import { postChat } from './api.js';
 import { initSearch } from './search.js';
+import { initStatus } from './status.js';
 
 const form = document.getElementById('chat-form');
 const input = document.getElementById('chat-input');
@@ -9,6 +10,7 @@ const input = document.getElementById('chat-input');
 export async function init() {
   await loadJournalList();
   await initSearch();
+  await initStatus();
   attachFormBehavior();
   attachNewEntryBehavior();
 }
