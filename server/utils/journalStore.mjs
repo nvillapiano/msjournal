@@ -87,6 +87,81 @@ export async function getEntryById(id) {
   }
 }
 
+export async function searchEntries(query = "", options = {}) {
+  const { tags = [], dateFrom = null, dateTo = null } = options;
+  
+  await ensureJournalDir();
+  const dir = getJournalDir();
+  const files = await fs.readdir(dir);
+  const results = [];
+
+  for (const file of files) {
+    if (!file.endsWith(".md")) continue;
+    const fullPath = path.join(dir, file);
+    const raw = await readFileSafe(fullPath);
+    if (!raw) continue;
+
+    let parsed;
+    try {
+      parsed = matter(raw);
+    } catch (e) {
+      console.warn('Failed to parse entry for search:', fullPath, e.message);
+      continue;
+    }
+
+    // Normalize date
+    let dateStr = null;
+    const rawDate = parsed.data.date ?? null;
+    if (rawDate) {
+      if (rawDate instanceof Date) {
+        dateStr = rawDate.toISOString().slice(0, 10);
+      } else {
+        dateStr = String(rawDate);
+      }
+    }
+
+    // Date range filter
+    if (dateFrom && dateStr && dateStr < dateFrom) continue;
+    if (dateTo && dateStr && dateStr > dateTo) continue;
+
+    // Tag filter: all requested tags must be present
+    const entryTags = parsed.data.tags || [];
+    if (tags.length > 0) {
+      const hasAllTags = tags.every(t => entryTags.includes(t.toLowerCase()));
+      if (!hasAllTags) continue;
+    }
+
+    // Full-text search across summary and body
+    const searchText = query.toLowerCase();
+    const summary = (parsed.data.summary || "").toLowerCase();
+    const body = (parsed.content || "").toLowerCase();
+    const matchedFull = summary.includes(searchText) || body.includes(searchText);
+
+    if (query && !matchedFull) continue;
+
+    // Build excerpt with context around match
+    let excerpt = parsed.data.summary || "";
+    if (!excerpt && query && body.includes(searchText)) {
+      const idx = body.indexOf(searchText);
+      const start = Math.max(0, idx - 60);
+      const end = Math.min(body.length, idx + 150);
+      excerpt = (start > 0 ? "..." : "") + body.slice(start, end) + (end < body.length ? "..." : "");
+    }
+
+    results.push({
+      id: file.replace(".md", ""),
+      date: dateStr,
+      tags: entryTags,
+      summary: parsed.data.summary || "",
+      excerpt: excerpt || parsed.data.summary || ""
+    });
+  }
+
+  // Sort newest -> oldest
+  results.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+  return results;
+}
+
 export async function appendExchange(userMessage) {
   await ensureJournalDir();
   const dir = getJournalDir();

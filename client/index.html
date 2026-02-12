@@ -18,8 +18,30 @@
           <button id="new-entry-btn" class="msj-new-entry">New entry</button>
         </div>
       </header>
-      <section class="msj-sidebar__list" id="journal-list">
-        <!-- filled by app.js -->
+
+      <section class="msj-sidebar__search">
+        <div class="search-container">
+          <input
+            id="search-input"
+            type="text"
+            class="search-input"
+            placeholder="Search entries..."
+          />
+          <div class="search-tag-wrapper">
+            <input
+              id="search-tag-input"
+              type="text"
+              class="search-tag-input"
+              placeholder="Filter by tag..."
+            />
+            <div id="search-tag-dropdown" class="search-tag-dropdown"></div>
+          </div>
+          <div id="search-tag-pills" class="search-tag-pills"></div>
+        </div>
+      </section>
+
+      <section class="msj-sidebar__list" id="journal-entries">
+        <!-- filled by app.js or search.js -->
       </section>
     </aside>
 

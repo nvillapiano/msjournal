@@ -12,6 +12,7 @@
   padding: 14px 16px 12px;
   gap: 10px;
   min-height: 0;
+  max-height: 100vh;
 }
 
 .msj-chat {

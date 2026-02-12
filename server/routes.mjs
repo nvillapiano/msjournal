@@ -2,7 +2,8 @@ import express from "express";
 import {
   listEntries,
   getEntryById,
-  appendExchange
+  appendExchange,
+  searchEntries
 } from "./utils/journalStore.mjs";
 
 const router = express.Router();
@@ -26,6 +27,25 @@ router.get("/journal/:id", async (req, res) => {
   } catch (err) {
     console.error("Error loading entry:", err);
     res.status(500).json({ error: "Failed to load entry" });
+  }
+});
+
+router.get("/journal/search", async (req, res) => {
+  try {
+    const { q = "", tags = "", dateFrom, dateTo } = req.query;
+    const tagArray = tags ? tags.split(",").map(t => t.trim().toLowerCase()) : [];
+    
+    const results = await searchEntries(q, {
+      tags: tagArray,
+      dateFrom,
+      dateTo
+    });
+    
+    console.info(`/api/journal/search -> found ${results.length} results for "${q}"`);
+    res.json(results);
+  } catch (err) {
+    console.error("Error in /journal/search:", err);
+    res.status(500).json({ error: "Search failed" });
   }
 });
 

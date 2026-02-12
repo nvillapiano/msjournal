@@ -1,7 +1,7 @@
 import { fetchJournalList, fetchEntry } from './api.js';
 import { appendMessage, escapeHtml, scrollChatToBottom } from './chat.js';
 
-const journalList = document.getElementById('journal-list');
+const journalList = document.getElementById('journal-entries');
 let entriesCache = [];
 
 function dateKeyFor(entry) {
