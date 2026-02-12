@@ -126,7 +126,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  min-height: 24px;
 }
 
 .tag-pill {
@@ -142,7 +141,22 @@
   white-space: nowrap;
 }
 
-.tag-remove {
+.query-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 16px;
+  background: rgba(255, 123, 44, 0.25);
+  border: 1px solid rgba(255, 123, 44, 0.5);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.tag-remove,
+.pill-remove {
   background: transparent;
   border: none;
   color: var(--text-muted);
@@ -153,7 +167,8 @@
   transition: color var(--transition-fast);
 }
 
-.tag-remove:hover {
+.tag-remove:hover,
+.pill-remove:hover {
   color: var(--accent);
 }
 
@@ -180,6 +195,8 @@
   max-height: calc(100vh - 14rem);
   opacity: 1;
   padding: 10px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Search result display styles */

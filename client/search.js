@@ -1,4 +1,5 @@
 import { fetchJournalList, fetchEntry } from './api.js';
+import { appendMessage, scrollChatToBottom } from './chat.js';
 import { loadJournalList } from './archive.js';
 
 let allTags = new Set();
@@ -34,6 +35,7 @@ export async function initSearch() {
   // Search text input
   searchInput.addEventListener('input', (e) => {
     searchQuery = e.target.value.trim();
+    updateTagPills();
     performSearch();
   });
 
@@ -79,6 +81,19 @@ export async function initSearch() {
     const isSearchArea = e.target.closest('.msj-sidebar__search');
     if (!isSearchArea) {
       hideTagDropdown();
+    }
+  });
+
+  // Delegated handler: clear the search query when the query-pill remove is clicked
+  document.addEventListener('click', (e) => {
+    const rm = e.target.closest('[data-remove-query]');
+    if (rm) {
+      e.preventDefault();
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) searchInput.value = '';
+      searchQuery = '';
+      updateTagPills();
+      performSearch();
     }
   });
 }
@@ -175,6 +190,16 @@ function updateTagPills() {
   if (!container) return;
 
   container.innerHTML = '';
+
+  // Add search query pill if present
+  if (searchQuery) {
+    const queryPill = document.createElement('span');
+    queryPill.className = 'query-pill';
+    queryPill.innerHTML = `"${searchQuery}" <button class="pill-remove" data-remove-query="true">×</button>`;
+    container.appendChild(queryPill);
+  }
+
+  // Add tag pills
   selectedTags.forEach(tag => {
     const pill = document.createElement('span');
     pill.className = 'tag-pill';
@@ -182,7 +207,10 @@ function updateTagPills() {
     container.appendChild(pill);
   });
 
-  // Remove button listeners
+  // Remove query button listener
+  // query remove is handled via delegated listener attached in initSearch
+
+  // Remove tag button listeners
   document.querySelectorAll('[data-remove-tag]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -223,12 +251,16 @@ function displaySearchResults() {
   const container = document.getElementById('journal-entries');
   if (!container) return;
 
+  console.log('displaySearchResults called with', searchResults.length, 'results');
+
   if (searchResults.length === 0) {
+    console.log('No results - removing has-content class');
     container.classList.remove('has-content');
     container.innerHTML = '<p class="search-no-results">No entries found</p>';
     return;
   }
 
+  console.log('Adding has-content class');
   container.classList.add('has-content');
 
   // Add result count header
@@ -267,17 +299,24 @@ function displaySearchResults() {
       if (fullEntry) {
         const chatWindow = document.getElementById('chat-window');
         if (chatWindow) {
-          chatWindow.innerHTML = `
-            <div class="entry-detail">
-              <h2>${result.id}</h2>
-              <div class="entry-metadata">
-                <span>${dateStr}</span>
-                ${tagsHtml ? `<div class="entry-tags">${tagsHtml}</div>` : ''}
-              </div>
-              <div class="entry-body">${fullEntry.body ? fullEntry.body.replace(/\n/g, '<br>') : ''}</div>
-            </div>
-          `;
+          chatWindow.innerHTML = '';
+
+          const body = fullEntry.body || '';
+          const segments = body.split(/\n-{3,}\n/).map(s => s.trim()).filter(Boolean);
+
+          for (const seg of segments) {
+            const youMatch = seg.match(/\*\*You:\*\*\s*([\s\S]*?)(?=(\n\*\*Agent:\*\*)|$)/i);
+            const agentMatch = seg.match(/\*\*Agent:\*\*\s*([\s\S]*)/i);
+            if (youMatch) appendMessage(youMatch[1].trim(), 'user');
+            if (agentMatch) appendMessage(agentMatch[1].trim(), 'agent');
+            if (!youMatch && !agentMatch) appendMessage(seg, 'agent');
+          }
+
+          scrollChatToBottom();
         }
+        // mark active in the list
+        const prev = document.getElementById('journal-entries').querySelector('.msj-entry--active');
+        if (prev) prev.classList.remove('msj-entry--active');
         entry.classList.add('msj-entry--active');
       }
     });
