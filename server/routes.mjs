@@ -19,17 +19,6 @@ router.get("/journal", async (req, res) => {
   }
 });
 
-router.get("/journal/:id", async (req, res) => {
-  try {
-    const entry = await getEntryById(req.params.id);
-    if (!entry) return res.status(404).json({ error: "Not found" });
-    res.json(entry);
-  } catch (err) {
-    console.error("Error loading entry:", err);
-    res.status(500).json({ error: "Failed to load entry" });
-  }
-});
-
 router.get("/journal/search", async (req, res) => {
   try {
     const { q = "", tags = "", dateFrom, dateTo } = req.query;
@@ -46,6 +35,17 @@ router.get("/journal/search", async (req, res) => {
   } catch (err) {
     console.error("Error in /journal/search:", err);
     res.status(500).json({ error: "Search failed" });
+  }
+});
+
+router.get("/journal/:id", async (req, res) => {
+  try {
+    const entry = await getEntryById(req.params.id);
+    if (!entry) return res.status(404).json({ error: "Not found" });
+    res.json(entry);
+  } catch (err) {
+    console.error("Error loading entry:", err);
+    res.status(500).json({ error: "Failed to load entry" });
   }
 });
 

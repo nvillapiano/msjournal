@@ -1,7 +1,7 @@
 /* Search sidebar styles */
 
 .msj-sidebar__search {
-  padding: 12px 10px;
+  padding: 10px 10px;
   border-radius: var(--radius-md);
   background: rgba(255, 123, 44, 0.05);
   border: 1px solid var(--border-subtle);
@@ -11,7 +11,13 @@
 .search-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .search-input {
@@ -24,6 +30,7 @@
   outline: none;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
   font-family: inherit;
+  flex: 1;
 }
 
 .search-input:focus {
@@ -33,6 +40,31 @@
 
 .search-input::placeholder {
   color: var(--text-muted);
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px 6px;
+  line-height: 1;
+  transition: color var(--transition-fast);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.search-input:not(:placeholder-shown) ~ .search-clear-btn,
+.search-input:focus ~ .search-clear-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.search-clear-btn:hover {
+  color: var(--accent);
 }
 
 .search-tag-wrapper {
@@ -128,17 +160,26 @@
 /* Updated journal list container */
 .msj-sidebar__list {
   margin-top: 6px;
-  flex: 1;
-  overflow-y: auto;
+  flex: 0 0 auto;
+  max-height: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: calc(100vh - 14rem);
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
   /* Match chat window styling so the list appears as a distinct panel */
-  padding: 10px;
+  padding: 0;
   border-radius: var(--radius-xl);
   background: radial-gradient(circle at top left, #171a23, #050608);
   border: 1px solid var(--border-subtle);
+}
+
+.msj-sidebar__list.has-content {
+  flex: 1;
+  max-height: calc(100vh - 14rem);
+  opacity: 1;
+  padding: 10px;
 }
 
 /* Search result display styles */
@@ -147,6 +188,22 @@
   text-align: center;
   color: var(--text-muted);
   font-size: 13px;
+}
+
+.search-error {
+  padding: 20px 12px;
+  text-align: center;
+  color: #ff6b6b;
+  font-size: 13px;
+}
+
+.search-result-count {
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 4px;
 }
 
 .entry-header {

@@ -12,12 +12,24 @@ let searchResults = [];
 export async function initSearch() {
   const searchInput = document.getElementById('search-input');
   const tagInput = document.getElementById('search-tag-input');
+  const clearBtn = document.getElementById('search-clear-btn');
   const tagList = document.getElementById('journal-entries');
 
   if (!searchInput) return; // Search not in DOM
 
   // Build tag list from entries
   await rebuildTagList();
+
+  // Trigger initial search to show all entries
+  await performSearch();
+
+  // Clear button
+  if (clearBtn) {
+    clearBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      clearSearch();
+    });
+  }
 
   // Search text input
   searchInput.addEventListener('input', (e) => {
@@ -59,6 +71,14 @@ export async function initSearch() {
       tagInput.value = '';
       hideTagDropdown();
       performSearch();
+    }
+  });
+
+  // Close dropdown when clicking outside search area
+  document.addEventListener('click', (e) => {
+    const isSearchArea = e.target.closest('.msj-sidebar__search');
+    if (!isSearchArea) {
+      hideTagDropdown();
     }
   });
 }
@@ -189,6 +209,10 @@ async function performSearch() {
     displaySearchResults();
   } catch (err) {
     console.error('Search error:', err);
+    const container = document.getElementById('journal-entries');
+    if (container) {
+      container.innerHTML = '<p class="search-error">Search failed. Please try again.</p>';
+    }
   }
 }
 
@@ -200,11 +224,18 @@ function displaySearchResults() {
   if (!container) return;
 
   if (searchResults.length === 0) {
+    container.classList.remove('has-content');
     container.innerHTML = '<p class="search-no-results">No entries found</p>';
     return;
   }
 
-  container.innerHTML = '';
+  container.classList.add('has-content');
+
+  // Add result count header
+  const resultCount = searchResults.length;
+  const plural = resultCount === 1 ? 'entry' : 'entries';
+  container.innerHTML = `<div class="search-result-count">${resultCount} ${plural} found</div>`;
+
   searchResults.forEach(result => {
     const entry = document.createElement('div');
     entry.className = 'msj-entry';
@@ -266,5 +297,5 @@ export function clearSearch() {
   if (searchInput) searchInput.value = '';
   if (tagInput) tagInput.value = '';
   updateTagPills();
-  loadJournalList();
+  performSearch();
 }
